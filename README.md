@@ -100,7 +100,7 @@ voice = VoiceInteractionService(
 )
 
 result = voice.run_turn()
-# Persist result.conversation_id in the future UI to restore this session.
+# Persist result.conversation_id in the local UI to restore this session.
 if result.conversation_id:
     snapshot = memory.restore(result.conversation_id)
 ```
@@ -195,10 +195,9 @@ if result.status == "approval_required":
     result = coding_assistant.resume_pending(pending.pending_id, token)
 ```
 
-The approval comment represents a required user-interface decision; applications
-must not confirm automatically. The returned status and pending tool are available
-to a future UI/API integration. The agent loop is non-streaming, so its response
-is spoken after the tool loop completes or pauses for approval.
+Applications must never confirm automatically. The API/UI expose the pending
+operation and confirmation workflow. The agent loop is non-streaming, so its
+response is spoken after the tool loop completes or pauses for approval.
 
 ### FastAPI and Streamlit local application
 
@@ -304,6 +303,30 @@ detection, and local-only model loading. It refuses to download a missing model
 during inference. Configure another model, device, compute type, language, or
 cache directory through `FasterWhisperConfig`.
 
+## Troubleshooting
+
+- **API will not start:** use `APP_HOST=127.0.0.1` (or `localhost`/`::1`) and a
+  free port. Public bind addresses and non-loopback browser origins are rejected.
+- **UI cannot reach the API:** start `python -m app.api.main` first and verify
+  `http://127.0.0.1:8000/health`. For another local port, set `APP_API_URL` in
+  the Streamlit process environment.
+- **Microphone or output device fails:** check Windows microphone privacy
+  permissions and the selected default devices. The API health check does not
+  open devices; start a turn to see actionable capture/playback errors.
+- **Whisper or Piper voice is missing:** download models only during setup,
+  verify `WHISPER_MODEL` or `PIPER_MODEL_PATH` and the matching Piper JSON
+  config, then retry. Runtime model downloads are disabled.
+- **Ollama is unavailable or model missing:** start the local Ollama service and
+  pull the configured model explicitly (for example `ollama pull llama3.1`).
+  Check `OLLAMA_BASE_URL` remains loopback and `OLLAMA_MODEL` matches a local
+  model.
+- **Coding tools do not see a file:** verify `WORKSPACE_ROOTS` includes the
+  project directory. File access is restricted to configured roots and bounded
+  UTF-8 text files.
+- **Database permission or schema error:** close other application instances,
+  verify the parent directory is writable, and keep the database local. Deleting
+  a conversation removes its messages; databases are not encrypted.
+
 ## Tests
 
 ```powershell
@@ -312,15 +335,29 @@ python -m pytest -q
 
 The tests mock the microphone, VAD, Whisper, Ollama, and Piper models. A real
 microphone/model smoke test still needs to be performed on the target machine.
+Run repeatable synthetic measurements for workspace search/read, Pydantic
+validation, and SQLite context operations with:
+
+```powershell
+python scripts\benchmark_local.py --iterations 100 --files 50
+```
+
+The report includes median/p95 latency and single-operation peak traced Python
+allocations. Timing runs separately from allocation tracing. It excludes
+inference, audio devices, and network operations; these results are not estimates
+of end-to-end voice latency or total process/model memory. See the
+[recorded baseline](docs/BENCHMARKS.md) for environment and dataset details.
+GitHub Actions runs tests on Python 3.11 and 3.14 on Linux and Windows using
+lightweight test dependencies; it does not download speech models.
 
 ## Current limitations
 
-- No FastAPI or Streamlit interface is implemented yet.
-- Voice coding mode is not implemented yet; standalone typed tools are available
-  through the registry but are not yet exposed in the UI/API.
+- Speech-model and real-device performance have not been benchmarked; measure on
+  the target machine after installing local models and selecting its devices.
 - Noise handling currently consists of Silero VAD and Faster-Whisper's VAD
   filtering; there is no dedicated denoising stage.
-- Model-size latency and memory benchmarks have not yet been measured.
+- Code and test execution are not an OS sandbox, even when confirmation is
+  enabled.
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the architecture and
 milestone acceptance criteria, and [DEVELOPMENT_PROGRESS.md](DEVELOPMENT_PROGRESS.md)

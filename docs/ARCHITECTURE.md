@@ -149,7 +149,7 @@ No cloud API key or external inference endpoint is part of the runtime configura
 | 7. Agent tools | Implemented typed registry for ten tools, workspace path restrictions, expiring exact-argument approvals, local Ollama tool calling, and privacy-minimized SQLite audit. Python/test execution is opt-in. | Tests cover approvals, traversal, schema validation, audit migration, tool selection, and no shell dispatch; live model/UI approval flow remains pending. |
 | 8. Voice coding mode | Implemented `VoiceCodingAssistant` over voice capture, local transcription/speech, workspace tools, and a coding-specific local agent prompt. | Tests demonstrate read-only source inspection, approval-gated writes, persistent turns, and empty/cancelled input handling. |
 | 9. FastAPI and Streamlit | Implemented loopback-only API routes for voice turns, coding approvals, and bounded conversation management, plus a loopback-bound UI for voice modes, session history, and exact-change approval. | Tests cover API session operations, approval routing, schema validation, local Host/Origin checks, and the Streamlit coding approval workflow. A live local health request passed. |
-| 10. Quality and docs | Performance measurements, hardening, installation and troubleshooting docs. | Targeted/full tests pass and measured latency/resource results are recorded. |
+| 10. Quality and docs | Added deterministic synthetic local-operation benchmarks, installation and troubleshooting guidance, and focused UI/API quality checks. | Full tests and benchmark pass; synthetic local-operation results are recorded. Real-model/device performance remains a deployment task. |
 
 ### Milestone 1 decision
 

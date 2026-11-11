@@ -2,7 +2,7 @@
 
 ## Current status
 
-**Milestone 9 - FastAPI and Streamlit integration: implemented; validated; awaiting review.**
+**Milestone 10 - Quality, performance measurements, and documentation: implemented; validated; awaiting review.**
 
 ### Completed
 
@@ -12,7 +12,7 @@
 - Defined the standalone application boundary, component flow, proposed package layout, offline/privacy invariants, risks, and phased exit criteria in `docs/ARCHITECTURE.md`.
 - Added lazy Silero VAD, explicit-start microphone capture with utterance segmentation/cancellation, and a local-only Faster-Whisper wrapper.
 - Added unit tests for capture boundaries, cancellation, input validation, offline model loading, and transcription failures.
-- Ran the Milestone 2 focused unit suite: 18 tests passed. Real-device/model smoke testing is pending because the speech runtime packages and local model are not installed here.
+- Ran the Milestone 2 focused unit suite: 18 tests passed. Real-device/model smoke testing remains pending; speech model files and hardware are not configured here.
 - Added a loopback-only Ollama HTTP client with token options, streaming/cancellation, bounded context, version/model checks, and explicit unavailable/model/request errors.
 - Added Ollama tests for response streaming, context limits, offline-host restrictions, health/model checks, failure handling, and cancellation.
 - Added Ollama setup and usage instructions. Runtime Ollama/model calls were not made.
@@ -42,10 +42,13 @@
 - Bound both API and Streamlit to loopback by default; rejected non-loopback client, Host, and browser Origin requests.
 - Added API/UI runtime dependencies, configuration and local startup documentation.
 - Verified API health over a live loopback request and exercised the Streamlit coding approval workflow with a local test server.
+- Added a repeatable synthetic benchmark for workspace search/read, tool schema validation, and SQLite context operations; documented a Windows/Python 3.14 baseline while explicitly excluding unmeasured inference/audio costs.
+- Added troubleshooting guidance and lightweight GitHub Actions tests for Python 3.11/3.14 on Linux and Windows.
+- Corrected stale setup/current-limitations documentation to match implemented API, UI, and voice-coding behavior.
 
 ### Remaining
 
-- Milestone 10: testing, optimization, and documentation.
+- Real microphone, local speech-model, Ollama, and target-device performance validation must be completed on the deployment machine.
 
 ## Milestone tracking
 
@@ -59,8 +62,8 @@
 | 6 | Persistent conversation memory | Implemented |
 | 7 | Agent tool calling and approvals | Complete |
 | 8 | Voice Coding Assistant mode | Complete |
-| 9 | FastAPI and Streamlit integration | Implemented; awaiting user review |
-| 10 | Testing, optimization, and documentation | Pending |
+| 9 | FastAPI and Streamlit integration | Complete |
+| 10 | Testing, optimization, and documentation | Implemented; awaiting user review |
 
 ## Validation
 
@@ -76,5 +79,8 @@
 - Milestone 9 full suite: 103 passed, 2 skipped (POSIX-only permission assertion and unavailable Windows symlink creation).
 - Streamlit UI workflow test covers voice coding request, exact change review, confirmation, and resume; API loopback health smoke test passed.
 - `python -m compileall -q app tests` and `pyproject.toml` validation passed after Milestone 9 changes.
+- Milestone 10 full suite: 106 passed, 2 skipped (POSIX-only permission assertion and unavailable Windows symlink creation).
+- Synthetic benchmark: 50 files, 100 iterations; recorded median/p95 times and single-operation traced allocations in `docs/BENCHMARKS.md`.
+- `python -m compileall -q app tests scripts` and `pyproject.toml` validation passed.
 - Transcript retention is manual only; automatic expiration and database encryption are not implemented.
-- Speech dependencies, speech model loading, microphone-device testing, live Ollama/model checks, Piper voice loading, and audio-device testing have not been performed in this environment.
+- Speech dependencies were installed for packaging validation, but speech models were not loaded; microphone/audio-device and live Ollama/model testing have not been performed.
