@@ -225,6 +225,21 @@ inspect the tool and arguments, then affirmatively approve that exact request.
 Conversation history is stored in the configured local SQLite database. Use
 the conversation selector and delete control to inspect or remove a session.
 
+### Streamlit Community Cloud showcase
+
+The root-level `streamlit_cloud_demo.py` is a read-only showcase that can be
+deployed to Streamlit Community Cloud without exposing the local API. It does
+not capture audio, run inference, access a workspace, or collect conversation
+data. To deploy, connect this public GitHub repository in Streamlit Community
+Cloud, select the `main` branch, and set the app file to
+`streamlit_cloud_demo.py`. The root `requirements.txt` contains only Streamlit
+for this standalone page.
+
+The showcase is not the working voice assistant. Streamlit Community Cloud
+cannot reach your computer's loopback API, microphone, local Ollama service, or
+workspace. Run `app/ui/streamlit_app.py` locally for full functionality; do not
+make the local API public to connect it to the hosted showcase.
+
 Set `APP_HOST` only to `127.0.0.1`, `localhost`, or `::1`; `APP_PORT`,
 `APP_API_URL`, `DATABASE_PATH`, `WORKSPACE_ROOTS`, `OLLAMA_BASE_URL`,
 `OLLAMA_MODEL`, `WHISPER_MODEL`, `WHISPER_DEVICE`, `WHISPER_COMPUTE_TYPE`,
