@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+.venv/
+.python-version
+__pycache__/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+models/
+data/
+logs/
+.streamlit/secrets.toml
