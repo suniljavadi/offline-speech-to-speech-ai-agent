@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
 
 from streamlit.testing.v1 import AppTest
 
@@ -109,7 +110,13 @@ def test_streamlit_coding_approval_workflow(monkeypatch) -> None:
         "APP_API_URL", f"http://127.0.0.1:{server.server_address[1]}"
     )
     try:
-        page = AppTest.from_file("app/ui/streamlit_app.py").run(timeout=15)
+        ui_script = (
+            Path(__file__).resolve().parents[2]
+            / "app"
+            / "ui"
+            / "streamlit_app.py"
+        )
+        page = AppTest.from_file(str(ui_script)).run(timeout=15)
         page.radio[0].set_value("Coding assistant").run(timeout=15)
         page.button[0].click().run(timeout=15)
         assert page.session_state["pending_id"] == "pending-1"
